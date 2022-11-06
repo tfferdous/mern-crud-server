@@ -1,27 +1,27 @@
 const router = require("express").Router();
-const { json } = require("express");
 const Product = require("../models/product");
-const multer = require("multer");
 const path = require("path");
-
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, path.join(__dirname, "../uploads"));
-	},
-	filename: function (req, file, cb) {
-		const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-		cb(null, file.fieldname + "-" + uniqueSuffix);
-	},
-});
-
-const upload = multer({ storage: storage });
+const upload = require("../middlewares/multer");
+const fs = require("fs");
 
 //add product
 router.post("/", upload.single("img"), async (req, res) => {
 	let { title, desc, price } = req.body;
-	console.log(req.body);
+	if (!req.file) return res.status(500).json({ message: "file not selected" });
+	let body = {
+		title,
+		desc,
+		price,
+		img: {
+			data: fs.readFileSync(
+				path.join(__dirname, "../uploads/" + req.file.filename)
+			),
+			contentType: "image/png",
+		},
+	};
+
 	try {
-		let newProduct = await Product.create({ title, desc, price });
+		let newProduct = await Product.create(body);
 		res.status(200).json({
 			product: newProduct,
 		});
@@ -70,6 +70,7 @@ router.patch("/:id", async (req, res) => {
 //delete  multiple products
 router.delete("/", async (req, res) => {
 	let { selectedProducts } = req.body;
+	console.log(req.body);
 	try {
 		let deletedProducts = await Product.deleteMany({
 			_id: { $in: selectedProducts },
