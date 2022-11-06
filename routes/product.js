@@ -70,7 +70,6 @@ router.patch("/:id", async (req, res) => {
 //delete  multiple products
 router.delete("/", async (req, res) => {
 	let { selectedProducts } = req.body;
-	console.log(req.body);
 	try {
 		let deletedProducts = await Product.deleteMany({
 			_id: { $in: selectedProducts },

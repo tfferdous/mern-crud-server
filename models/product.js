@@ -9,6 +9,10 @@ const ProductSchema = new mongoose.Schema(
 			data: Buffer,
 			contentType: String,
 		},
+		status: {
+			type: "String",
+			default: "pending",
+		},
 	},
 	{ timestamps: true }
 );
