@@ -67,6 +67,27 @@ router.patch("/:id", async (req, res) => {
 	} catch (error) {}
 });
 
+//update multiple
+router.patch("/", async (req, res) => {
+	let draftStatusChanges = req.body;
+	Product.find(
+		{ _id: { $in: [...draftStatusChanges?.map((item) => item.id)] } },
+		(err, products) => {
+			console.log(products);
+			if (err) {
+				res.status(500).json({ message: err.message });
+			} else {
+				res.status(200).json({ products });
+			}
+		}
+	);
+
+	// try {
+	// 	let updatedProduct = await Product
+	// 	res.status(200).json({ updatedProduct });
+	// } catch (error) {}
+});
+
 //delete  multiple products
 router.delete("/", async (req, res) => {
 	let { selectedProducts } = req.body;
