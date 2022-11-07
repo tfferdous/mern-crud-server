@@ -7,7 +7,7 @@ const fs = require("fs");
 //add product
 router.post("/", upload.single("img"), async (req, res) => {
 	let { title, desc, price } = req.body;
-	if (!req.file) return res.status(500).json({ message: "file not selected" });
+
 	let body = {
 		title,
 		desc,
