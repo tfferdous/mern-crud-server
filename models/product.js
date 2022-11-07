@@ -4,13 +4,15 @@ const ProductSchema = new mongoose.Schema(
 	{
 		title: { type: String, required: true },
 		price: { type: Number, required: true },
-		desc: String,
+		desc: {
+			type: String,
+			required: true,
+		},
 		img: {
-			data: Buffer,
-			contentType: String,
+			type: Object,
 		},
 		status: {
-			type: "String",
+			type: String,
 			default: "pending",
 		},
 	},

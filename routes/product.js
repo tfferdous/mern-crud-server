@@ -2,24 +2,25 @@ const router = require("express").Router();
 const Product = require("../models/product");
 const path = require("path");
 const upload = require("../middlewares/multer");
-const fs = require("fs");
 
 //add product
-router.post("/", async (req, res) => {
-	console.log(req.body);
-	const newData = new Product(req.body);
-	newData.save(req.body, (err) => {
-		if (err) {
-			console.log(err);
-			res.status(500).json({
-				error: "There is server side error",
-			});
-		} else {
-			res.status(200).json({
-				message: "Add data successfully",
-			});
-		}
-	});
+router.post("/", upload.single("img"), async (req, res) => {
+	const newImage = req.file.toString(`base64`);
+	const image = {
+		contentType: req.file.mimetype,
+		size: req.file.size,
+		img: Buffer(newImage, "base64"),
+	};
+
+	try {
+		let product = Product({ ...req.body, img: image });
+		let newProduct = await product.save();
+		res.status(200).json({
+			product: newProduct,
+		});
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
 });
 
 //get products

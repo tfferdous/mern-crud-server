@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
+const bodyParser = require("body-parser");
 
 //internal imports
 const Product = require("./models/product");
@@ -11,7 +12,7 @@ const productRouter = require("./routes/product");
 //initialize-app
 const app = express();
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 //connect mongodb
