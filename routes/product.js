@@ -5,11 +5,12 @@ const upload = require("../middlewares/multer");
 
 //add product
 router.post("/", upload.single("img"), async (req, res) => {
-	const newImage = req.file.toString(`base64`);
+	const newImage = req.file.buffer.toString(`base64`);
+
 	const image = {
 		contentType: req.file.mimetype,
 		size: req.file.size,
-		img: Buffer(newImage, "base64"),
+		img: Buffer.from(newImage, "base64"),
 	};
 
 	try {
@@ -27,6 +28,7 @@ router.post("/", upload.single("img"), async (req, res) => {
 router.get("/", async (req, res) => {
 	try {
 		let products = await Product.find({});
+
 		res.status(200).json({ products });
 	} catch (error) {
 		res.status(500).json({
