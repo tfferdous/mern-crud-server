@@ -26,6 +26,8 @@ router.post("/", upload.single("img"), async (req, res) => {
 			product: newProduct,
 		});
 	} catch (error) {
+		console.log("error:" + error);
+		console.log(req.body);
 		res.status(500).json({ message: error.message });
 	}
 });
