@@ -5,31 +5,21 @@ const upload = require("../middlewares/multer");
 const fs = require("fs");
 
 //add product
-router.post("/", upload.single("img"), async (req, res) => {
-	let { title, desc, price } = req.body;
-
-	let body = {
-		title,
-		desc,
-		price,
-		img: {
-			data: fs.readFileSync(
-				path.join(__dirname, "../uploads/" + req.file.filename)
-			),
-			contentType: "image/png",
-		},
-	};
-
-	try {
-		let newProduct = await Product.create(body);
-		res.status(200).json({
-			product: newProduct,
-		});
-	} catch (error) {
-		console.log("error:" + error);
-		console.log(req.body);
-		res.status(500).json({ message: error.message });
-	}
+router.post("/", async (req, res) => {
+	console.log(req.body);
+	const newData = new Product(req.body);
+	newData.save(req.body, (err) => {
+		if (err) {
+			console.log(err);
+			res.status(500).json({
+				error: "There is server side error",
+			});
+		} else {
+			res.status(200).json({
+				message: "Add data successfully",
+			});
+		}
+	});
 });
 
 //get products
